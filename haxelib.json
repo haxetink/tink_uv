@@ -1,0 +1,17 @@
+{
+  "name": "tink_uv",
+  "license": "MIT",
+  "tags": [
+    "libuv"
+  ],
+  "classPath": "src",
+  "contributors": [
+    "kevinresol,back2dos"
+  ],
+  "releasenote": "initial release",
+  "version": "0.0.0",
+  "dependencies": {
+    "linc_uv": "",
+    "tink_syntaxhub": ""
+  }
+}
