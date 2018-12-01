@@ -13,16 +13,25 @@ class TcpTest {
 	
 	public function client() {
 		var tcp = Tcp.alloc();
-		var result = tcp.connect({ip: '93.184.216.34', port: 80}, function(status) {
+		var r = tcp.connect({ip: '93.184.216.34', port: 80}, function(status) {
 			asserts.assert(status == 0);
-			trace(tcp.write(Bytes.ofString('GET / HTTP/1.1\r\nHost: example.com\r\nConnection: close\r\n\r\n'), function(i) trace('written $i')));
-			trace(tcp.readStart(function(status, bytes) {
-				trace(status, bytes == null ? null : bytes.length);
-				if(status == Uv.EOF) asserts.done();
-			}));
+			var r = tcp.write(Bytes.ofString('GET / HTTP/1.1\r\nHost: example.com\r\nConnection: close\r\n\r\n'), function(status) asserts.assert(status == 0));
+			asserts.assert(r == 0);
+			var r = tcp.readStart(function(status, bytes) {
+				if(status > 0) {
+					asserts.assert(bytes.length == status);
+				} else if(status == Uv.EOF) {
+					asserts.assert(bytes == null);
+					asserts.done();
+				} else {
+					asserts.assert(bytes == null);
+					asserts.fail(status, Uv.err_name(status).toString());
+				}
+			});
+			asserts.assert(r == 0);
 		});
 		
-		if(result != 0) asserts.fail(result, Uv.err_name(result).toString());
+		asserts.assert(r == 0);
 		return asserts;
 	}
 }

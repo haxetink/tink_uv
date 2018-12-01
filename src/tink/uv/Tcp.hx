@@ -27,6 +27,7 @@ class Tcp extends Stream {
 		}
 	}
 	
+	// TODO: ipv6
 	public function connect(dest, cb:Int->Void, ?pos:haxe.PosInfos) {
 		var req = Connect.alloc(this);
 		var addr = new uv.SockAddrIn();
@@ -41,6 +42,7 @@ class Tcp extends Stream {
 		return result;
 	}
 	
+	// TODO: ipv6
 	public function bind(target, flags) {
 		var addr = new uv.SockAddrIn();
 		addr.ip4Addr(target.ip, target.port);
