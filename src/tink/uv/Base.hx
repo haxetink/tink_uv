@@ -4,7 +4,7 @@ class Base extends cpp.Finalizable {
 	// TODO: read the docs and make sure this is not a weak map
 	static var retained:Map<Base, Int> = new Map();
 	
-	public var data:Any;
+	var data:Any;
 	
 	var id:Int;
 	static var ids:Int;

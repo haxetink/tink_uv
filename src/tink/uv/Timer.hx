@@ -2,20 +2,16 @@ package tink.uv;
 
 import uv.Uv;
 import cpp.*;
-import tink.Chunk;
-import tink.uv.helpers.*;
-import haxe.io.Bytes;
-
-using tink.uv.Result;
 
 class Timer extends Handle {
 	public var timer(default, null):uv.Timer;
+	
+	var _onTimer:Void->Void;
 	
 	function new(timer:uv.Timer) {
 		super(timer);
 		this.timer = timer;
 	}
-	
 	
 	public static function alloc(?loop:uv.Loop) {
 		var handle = new uv.Timer();
@@ -32,13 +28,24 @@ class Timer extends Handle {
 		}
 	}
 	
-	
 	public inline function start(cb, timeout, repeat) {
-		retain();
-		timer.start(cb, timeout, repeat);
+		if(_onTimer == null) {
+			var result = timer.start(Callable.fromStaticFunction(onTimer), timeout, repeat);
+			if(result == 0) {
+				retain();
+				_onTimer = cb;
+			}
+			return result;
+		} else {
+			// TODO: align with the behaviour with libuv, do they just replace the callback?
+			return Uv.EINVAL;
+		}
 	}
 	
-	public inline function stop() timer.stop();
+	public inline function stop() {
+		release();
+		timer.stop();
+	}
 	
 	override function finalize() {
 		if(timer != null) {
@@ -52,7 +59,9 @@ class Timer extends Handle {
 		timer = null;
 	}
 	
-	static function onAlloc(handle:RawPointerOfHandle, size:SizeT, buf:RawPointerOfBuf) {
-		Buf.alloc(Bytes.alloc(cast size), buf);
+	static function onTimer(handle:RawPointer<Timer_t>):Void {
+		var timer = tink.uv.Timer.retrieve(handle, false);
+		timer._onTimer();
 	}
+	
 }

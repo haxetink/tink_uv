@@ -12,14 +12,12 @@ class Timer {
   
   public function new(time_ms:Int) {
     handle = tink.uv.Timer.alloc();
-    handle.data = this;
-    handle.start(Cb.from(callback), time_ms, time_ms);
+    handle.start(function() run(), time_ms, time_ms); // wrap run because it is dynamic
   }
   
   dynamic public function run() {}
   
   public function stop() {
-    handle.release();
     handle.stop();
     handle.destroy();
     handle = null;
@@ -43,10 +41,5 @@ class Timer {
   
   public static function stamp():Float {
     return Uv.hrtime() / 1e9;
-  }
-  
-  static function callback(handle:RawPointerOfTimer):Void {
-    var timer:Timer = tink.uv.Timer.retrieve(handle, false).data; // don't release here, will do so in stop()
-    timer.run();
   }
 }

@@ -27,13 +27,16 @@ class Tcp extends Stream {
 		}
 	}
 	
-	public function connect(dest, cb, ?pos:haxe.PosInfos) {
+	public function connect(dest, cb:Int->Void, ?pos:haxe.PosInfos) {
 		var req = Connect.alloc(this);
-		req.retain(pos);
-		retain(pos);
 		var addr = new uv.SockAddrIn();
 		addr.ip4Addr(dest.ip, dest.port);
-		var result = tcp.connect(req.connect, addr, cb).toResult();
+		var result = tcp.connect(req.connect, addr, Callable.fromStaticFunction(onConnect));
+		if(result == 0) {
+			retain(pos);
+			req.retain(pos);
+			req.data = cb;
+		}
 		addr.destroy(); 
 		return result;
 	}
@@ -41,7 +44,7 @@ class Tcp extends Stream {
 	public function bind(target, flags) {
 		var addr = new uv.SockAddrIn();
 		addr.ip4Addr(target.ip, target.port);
-		var result = tcp.bind(addr, flags).toResult();
+		var result = tcp.bind(addr, flags);
 		addr.destroy();
 		return result;
 	}
@@ -56,5 +59,11 @@ class Tcp extends Stream {
 	override function cleanup() {
 		super.cleanup();
 		tcp = null;
+	}
+	
+	static function onConnect(req:RawPointer<Connect_t>, status:Int) {
+		var connect = Connect.retrieve(req);
+		var cb:Int->Void = connect.data;
+		cb(status);
 	}
 }

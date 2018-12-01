@@ -8,7 +8,7 @@ import tink.Chunk;
 class Write extends Req {
 	public var write(default, null):uv.Write;
 	public var stream(default, null):Stream;
-	public var buf(default, null):Buf;
+	public var buf(default, null):uv.Buf;
 	
 	function new(write:uv.Write, stream, buf) {
 		super(write);
@@ -28,7 +28,7 @@ class Write extends Req {
 				if(release) {
 					v.release(pos);
 					v.stream.release(pos);
-					v.buf.release(pos);
+					v.buf.destroy();
 				}
 				return v;
 		}
