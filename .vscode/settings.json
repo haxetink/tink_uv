@@ -1,0 +1,11 @@
+{
+	"haxe.displayConfigurations": [
+		[
+			"tests.hxml",
+			"-lib",
+			"travix",
+			"-lib",
+			"tink_uv"
+		]
+	]
+}
