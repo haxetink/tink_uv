@@ -1,6 +1,7 @@
 package tink.uv;
 
 class Base extends cpp.Finalizable {
+	// TODO: read the docs and make sure this is not a weak map
 	static var retained:Map<Base, Int> = new Map();
 	
 	public var data:Any;
@@ -32,7 +33,7 @@ class Base extends cpp.Finalizable {
 		haxe.Log.trace('Released ${toString()}, current reference count = $count', pos);
 	}
 	
-	inline function destroy() {
+	public inline function destroy() {
 		finalize();
 	}
 	

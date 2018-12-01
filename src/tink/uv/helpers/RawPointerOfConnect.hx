@@ -1,4 +1,4 @@
-package tink.uv;
+package tink.uv.helpers;
 
 import uv.Uv;
 import cpp.*;

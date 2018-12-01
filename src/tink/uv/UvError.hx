@@ -4,6 +4,7 @@ import uv.Uv;
 
 using tink.CoreApi;
 
+@:forward
 abstract UvError(Error) to Error #if tink_unittest to tink.unit.AssertionBuffer.FailingReason #end{
 	inline function new(e) this = e;
 	@:from public static inline function fromStatus(code:Int):UvError {

@@ -5,7 +5,7 @@ import cpp.*;
 import tink.Chunk;
 
 @:allow(tink.uv)
-class Write extends Handle {
+class Write extends Req {
 	public var write(default, null):uv.Write;
 	public var stream(default, null):Stream;
 	public var buf(default, null):Buf;

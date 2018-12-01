@@ -5,22 +5,22 @@ import cpp.*;
 import tink.Chunk;
 
 @:allow(tink.uv)
-class Connect extends Req {
-	public var connect(default, null):uv.Connect;
+class Shutdown extends Req {
+	public var shutdown(default, null):uv.Shutdown;
 	public var stream(default, null):Stream;
 	
-	function new(connect:uv.Connect, stream) {
-		super(connect);
-		this.connect = connect;
+	function new(shutdown:uv.Shutdown, stream) {
+		super(shutdown);
+		this.shutdown = shutdown;
 		this.stream = stream;
 	}
 	
 	static function alloc(stream) {
-		return new Connect(new uv.Connect(), stream);
+		return new Shutdown(new uv.Shutdown(), stream);
 	}
 	
-	public static function retrieve(handle:uv.Connect, release = true, ?pos:haxe.PosInfos) {
-		switch Std.instance((handle.getData():Connect), Connect) {
+	public static function retrieve(handle:uv.Shutdown, release = true, ?pos:haxe.PosInfos) {
+		switch Std.instance((handle.getData():Shutdown), Shutdown) {
 			case null: throw 'No wrapper instance is stored in this handle';
 			case v: 
 				trace(Stream.retrieve(handle.handle, false) == v.stream);
@@ -33,14 +33,14 @@ class Connect extends Req {
 	}
 	
 	override function finalize() {
-		if(connect != null) {
-			connect.destroy();
+		if(shutdown != null) {
+			shutdown.destroy();
 			cleanup();
 		}
 	}
 	
 	override function cleanup() {
 		super.cleanup();
-		connect = null;
+		shutdown = null;
 	}
 }

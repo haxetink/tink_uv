@@ -3,24 +3,23 @@ package haxe;
 import uv.Uv;
 import cpp.*;
 import cpp.vm.*;
-
+import tink.uv.helpers.*;
 
 // patch Timer so that MainLoop is not generated
 class Timer {
   
-  var handle:uv.Timer;
+  var handle:tink.uv.Timer;
   
   public function new(time_ms:Int) {
-    handle = new uv.Timer();
-    handle.init(uv.Loop.DEFAULT);
-    handle.start(Callable.fromStaticFunction(callback), cast time_ms, cast time_ms);
-    handle.setData(this);
-    Gc.setFinalizer(this, Callable.fromStaticFunction(finalize));
+    handle = tink.uv.Timer.alloc();
+    handle.data = this;
+    handle.start(Cb.from(callback), time_ms, time_ms);
   }
   
   dynamic public function run() {}
   
   public function stop() {
+    handle.release();
     handle.stop();
     handle.destroy();
     handle = null;
@@ -43,18 +42,11 @@ class Timer {
   }
   
   public static function stamp():Float {
-    return (cast Uv.hrtime()) / 1e9;
+    return Uv.hrtime() / 1e9;
   }
   
-  static function callback(handle:RawPointer<Timer_t>):Void {
-    var timer:Timer = uv.Timer.fromRaw(handle).getData();
+  static function callback(handle:RawPointerOfTimer):Void {
+    var timer:Timer = tink.uv.Timer.retrieve(handle, false).data; // don't release here, will do so in stop()
     timer.run();
-  }
-  
-  static function finalize(timer:Timer) {
-    if(timer.handle != null) {
-      timer.handle.destroy();
-      timer.handle = null;
-    }
   }
 }
