@@ -15,11 +15,12 @@ enum IpVersion {
 }
 
 class Host {
-	public static function resolve(host:String, version:Int):Promise<String> {
+	public static function resolve(host:String, version:IpVersion):Promise<String> {
 		var trigger = Future.trigger();
 		
 		var ip = 0;
-		switch Uv.inet_pton(version, host, cast RawPointer.addressOf(ip)) {
+		
+		switch Uv.inet_pton(version == V4 ? Uv.AF_INET : Uv.AF_INET6, host, cast RawPointer.addressOf(ip)) {
 			case 0:
 				trigger.trigger(Success(host));
 			case _:

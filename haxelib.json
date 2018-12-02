@@ -6,12 +6,13 @@
   ],
   "classPath": "src",
   "contributors": [
-    "kevinresol,back2dos"
+    "kevinresol",
+    "back2dos"
   ],
   "releasenote": "initial release",
   "version": "0.0.0",
   "dependencies": {
-    "linc_uv": "",
+    "hxuv": "",
     "tink_syntaxhub": ""
   }
 }

@@ -1,11 +1,9 @@
 package tink.uv;
 
-using tink.CoreApi;
+import tink.core.Outcome;
+import tink.core.Noise;
 
 class Result {
-	static var SUCCESS = Success(Noise);
-	
-	public static function toResult(status:Int):Outcome<Noise, UvError> {
-		return status >= 0 ? SUCCESS : Failure((status:UvError));
-	}
+	public static function toResult(status:Int)
+		return status == 0 ? Success(Noise) : Failure(Error.ofStatus(status));
 }

@@ -1,17 +1,12 @@
 package haxe;
 
-import uv.Uv;
-import cpp.*;
-import cpp.vm.*;
-import tink.uv.helpers.*;
-
 // patch Timer so that MainLoop is not generated
 class Timer {
   
-  var handle:tink.uv.Timer;
+  var handle:hxuv.Timer;
   
   public function new(time_ms:Int) {
-    handle = tink.uv.Timer.alloc();
+    handle = hxuv.Timer.alloc();
     handle.start(function() run(), time_ms, time_ms); // wrap run because it is dynamic
   }
   
@@ -40,6 +35,6 @@ class Timer {
   }
   
   public static function stamp():Float {
-    return Uv.hrtime() / 1e9;
+    return hxuv.Misc.hrtime() / 1e9;
   }
 }
