@@ -1,14 +1,17 @@
 package tink.uv;
 
 #if macro
+import haxe.macro.Context;
+
 class Boot {
   static function boot() {
-    tink.SyntaxHub.transformMain.whenever(function (e) { 
-      return macro @:pos(e.pos) {
-        $e;
-        uv.Uv.run(uv.Uv.default_loop(), uv.Uv.RUN_DEFAULT);
-      }
-    });
+    if(!Context.defined('tink_uv_no_run_loop'))
+      tink.SyntaxHub.transformMain.whenever(function (e) { 
+        return macro @:pos(e.pos) {
+          $e;
+          hxuv.Loop.DEFAULT.run(DEFAULT);
+        }
+      });
   }
 }
 #else 
